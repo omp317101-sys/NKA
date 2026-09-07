@@ -76,6 +76,22 @@
             70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
+
+        /* Ghost CAD array markers */
+        .cad-ghost-bin {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.85);
+            border: 2px dashed #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 900;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.9);
+        }
     </style>
 </head>
 <body class="h-full bg-[#06170A] text-slate-100 antialiased selection:bg-emerald-600 selection:text-white flex flex-col">
@@ -180,29 +196,49 @@
             <!-- VIEW 1: MAP, COMPLAINTS & DUSTBINS -->
             <div id="viewOverview" class="space-y-6">
                 
-                <!-- MAP SECTION -->
+                <!-- MAP SECTION WITH AUTOCAD LINE DEPLOY TOOLBAR -->
                 <div id="sectionMap" class="bg-[#0b2410] border border-emerald-900/60 rounded-3xl p-5 space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-950/80 pb-3">
                         <div>
                             <h2 class="text-xs font-black uppercase tracking-wider text-slate-200 flex items-center gap-2">
-                                <span>🗺️</span> Nashik Geographic Command Map (Active Operational Layer)
+                                <span>🗺️</span> Nashik Geographic Command Map
                             </h2>
                             <p class="text-[11px] text-emerald-300/70">
-                                ⚡ Note: Resolved complaints are automatically purged from the live map view.
+                                ⚡ Active operational grid. Resolved complaints are automatically cleared from the map.
                             </p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="openDustbinModal(null)" class="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 active:scale-95 transition-all shadow-md">
-                                <span>📍</span>
-                                <span>Place Bin (Offset / Custom)</span>
+
+                        <!-- AutoCAD Line Array Controls -->
+                        <div class="flex flex-wrap items-center gap-2 bg-black/50 p-1.5 rounded-2xl border border-emerald-900/60">
+                            <button id="cadModeToggleBtn" onclick="toggleCadMode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow">
+                                <span id="cadModeIcon">📐</span>
+                                <span id="cadModeLabel">AutoCAD Line Deploy: OFF</span>
                             </button>
-                            <div class="flex items-center gap-2 text-[10px] font-bold pl-2 border-l border-emerald-900/80">
-                                <span class="flex items-center gap-1 text-rose-400"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Unresolved</span>
-                                <span class="flex items-center gap-1 text-amber-400"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Dispatched</span>
-                                <span class="flex items-center gap-1 text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Bin &lt;50%</span>
-                                <span class="flex items-center gap-1 text-rose-500"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Bin &ge;80%</span>
+
+                            <div class="flex items-center gap-1 pl-2 border-l border-emerald-950">
+                                <span class="text-[10px] font-bold text-slate-400">Interval:</span>
+                                <select id="cadIntervalSelect" onchange="setCadInterval(this.value)" class="bg-slate-900 border border-emerald-950 text-emerald-300 rounded-lg text-xs font-bold px-2 py-1 focus:outline-none">
+                                    <option value="25">25 Meters</option>
+                                    <option value="50" selected>50 Meters</option>
+                                    <option value="100">100 Meters</option>
+                                    <option value="200">200 Meters</option>
+                                </select>
                             </div>
+
+                            <button onclick="openDustbinModal(null)" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-extrabold flex items-center gap-1 active:scale-95 transition-all shadow ml-1">
+                                <span>📍</span>
+                                <span>Single Bin</span>
+                            </button>
                         </div>
+                    </div>
+
+                    <!-- Live Instructions banner when CAD mode is active -->
+                    <div id="cadInstructionBanner" class="hidden px-3.5 py-2 bg-emerald-950/70 border border-emerald-500/40 rounded-xl flex items-center justify-between text-xs text-emerald-200">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <b>AutoCAD Mode Active:</b> Press & hold LEFT CLICK on the map to set Start Bin, then DRAG along the street/ghat. Release to drop all bins in a straight line!
+                        </span>
+                        <span id="cadStatusHud" class="font-mono font-bold text-[11px] text-emerald-400">Waiting for long-press...</span>
                     </div>
 
                     <div class="h-96 w-full rounded-2xl overflow-hidden border border-emerald-950 relative">
@@ -259,7 +295,7 @@
                             <h2 class="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
                                 <span>🗑️</span> Smart Dustbins & IoT Telemetry
                             </h2>
-                            <p class="text-[11px] text-slate-400">Generate bins 25m, 50m, 100m from an existing bin, or delete in batches.</p>
+                            <p class="text-[11px] text-slate-400">Deployed IoT smart bins with ultrasonic fill, odour, and thermal monitoring.</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button onclick="batchDeleteDustbins()" class="px-3 py-1.5 bg-rose-950 hover:bg-rose-900 border border-rose-800 text-rose-200 text-xs font-extrabold rounded-xl shadow active:scale-95 transition-all flex items-center gap-1.5">
@@ -318,7 +354,58 @@
         </main>
     </div>
 
-    <!-- DUSTBIN MODAL WITH DISTANCE OFFSET ENGINE -->
+    <!-- AUTOCAD CONFIRMATION BATCH MODAL -->
+    <div id="cadConfirmModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0b2410] border border-emerald-900/80 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-emerald-950 pb-3">
+                <h3 class="text-sm font-black text-white flex items-center gap-2">
+                    <span>📐</span> Deploy Straight Line of Dustbins
+                </h3>
+                <button onclick="cancelCadArray()" class="text-slate-400 hover:text-white font-bold text-xs">✕</button>
+            </div>
+
+            <div class="p-3 bg-black/40 border border-emerald-950 rounded-2xl space-y-1.5 text-xs">
+                <p class="text-emerald-300 font-bold">Total Dustbins to Create: <span id="cadModalBinCount" class="text-white font-mono text-sm">0</span></p>
+                <p class="text-slate-400 text-[11px]">Total Line Distance: <span id="cadModalTotalDistance" class="text-white font-mono">0</span> m (Every <span id="cadModalIntervalDisplay" class="text-white font-mono">50</span>m)</p>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[10px] font-black uppercase text-slate-400">Base Name / Ghat Street</label>
+                    <input type="text" id="cadBaseNameInput" value="Ramkund Ghat Walkway" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    <span class="text-[9px] text-slate-500 block mt-0.5">Bins will be numbered #1, #2, #3 automatically.</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400">Capacity</label>
+                        <select id="cadBinCapacity" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
+                            <option value="500L" selected>500 Liters</option>
+                            <option value="240L">240 Liters</option>
+                            <option value="1100L">1100 Liters</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400">Waste Category</label>
+                        <select id="cadBinCategory" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
+                            <option value="Mixed Municipal Waste" selected>Mixed Waste</option>
+                            <option value="Dry & Plastic Waste">Dry / Plastic</option>
+                            <option value="Wet & Biodegradable">Wet Waste</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="cancelCadArray()" class="flex-1 py-2.5 bg-black/40 text-slate-300 font-bold text-xs rounded-xl">Cancel</button>
+                <button type="button" onclick="confirmSaveCadArray()" class="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all">
+                    ✓ Deploy All Bins to Cloud
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DUSTBIN MODAL (SINGLE / OFFSET) -->
     <div id="dustbinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#0b2410] border border-emerald-900/80 rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-emerald-950 pb-3">
@@ -332,7 +419,7 @@
                 <!-- Offset Mode Generator Tool -->
                 <div class="p-3 bg-black/50 border border-emerald-900/60 rounded-2xl space-y-2">
                     <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                        <span>📐</span> Generate Position from Existing Bin (25m, 50m, 100m, etc.)
+                        <span>📐</span> Offset from Existing Bin (25m, 50m, 100m, etc.)
                     </span>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                         <div>
@@ -523,6 +610,223 @@
         let selectedComplaintIds = new Set();
         let selectedDustbinIds = new Set();
 
+        // ================= AUTOCAD LINE ARRAY ENGINE =================
+        let isCadModeActive = false;
+        let cadIntervalMeters = 50;
+        let cadIsMouseDown = false;
+        let cadStartLatLng = null;
+        let cadGuideLine = null;
+        let cadGhostMarkers = [];
+        let pendingCadPoints = [];
+
+        function toggleCadMode() {
+            isCadModeActive = !isCadModeActive;
+            const btn = document.getElementById('cadModeToggleBtn');
+            const icon = document.getElementById('cadModeIcon');
+            const label = document.getElementById('cadModeLabel');
+            const banner = document.getElementById('cadInstructionBanner');
+
+            if (isCadModeActive) {
+                btn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow ring-2 ring-emerald-400";
+                icon.innerText = "⚡";
+                label.innerText = "AutoCAD Mode: ACTIVE";
+                banner.classList.remove('hidden');
+                if (map) {
+                    map.dragging.disable(); // Prevent map panning while drawing straight line
+                }
+                showToast("📐 AutoCAD Mode ON: Long press & drag on map to place bins in line!");
+            } else {
+                btn.className = "px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow";
+                icon.innerText = "📐";
+                label.innerText = "AutoCAD Line Deploy: OFF";
+                banner.classList.add('hidden');
+                clearCadDraft();
+                if (map) {
+                    map.dragging.enable();
+                }
+                showToast("AutoCAD Mode turned OFF.");
+            }
+        }
+
+        function setCadInterval(val) {
+            cadIntervalMeters = parseFloat(val) || 50;
+            showToast(`📏 Straight line interval set to ${cadIntervalMeters}m`);
+        }
+
+        function clearCadDraft() {
+            if (cadGuideLine && map) {
+                map.removeLayer(cadGuideLine);
+                cadGuideLine = null;
+            }
+            cadGhostMarkers.forEach(m => map && map.removeLayer(m));
+            cadGhostMarkers = [];
+            pendingCadPoints = [];
+            cadStartLatLng = null;
+            cadIsMouseDown = false;
+        }
+
+        function initCadMapListeners() {
+            if (!map) return;
+
+            map.on('mousedown', (e) => {
+                if (!isCadModeActive) return;
+                cadIsMouseDown = true;
+                cadStartLatLng = e.latlng;
+                clearCadDraft();
+                cadStartLatLng = e.latlng;
+                document.getElementById('cadStatusHud').innerText = "Dragging straight line...";
+            });
+
+            map.on('mousemove', (e) => {
+                if (!isCadModeActive || !cadIsMouseDown || !cadStartLatLng) return;
+
+                const currentLatLng = e.latlng;
+                const distanceMeters = map.distance(cadStartLatLng, currentLatLng);
+                const bearing = computeBearingDegrees(cadStartLatLng.lat, cadStartLatLng.lng, currentLatLng.lat, currentLatLng.lng);
+
+                document.getElementById('cadStatusHud').innerText = `Distance: ${distanceMeters.toFixed(1)}m | Angle: ${bearing.toFixed(0)}°`;
+
+                // Update dashed AutoCAD guide line
+                if (!cadGuideLine) {
+                    cadGuideLine = L.polyline([cadStartLatLng, currentLatLng], {
+                        color: '#10B981',
+                        weight: 3,
+                        dashArray: '6, 8',
+                        opacity: 0.95
+                    }).addTo(map);
+                } else {
+                    cadGuideLine.setLatLngs([cadStartLatLng, currentLatLng]);
+                }
+
+                // Calculate intermediate points along the straight line
+                cadGhostMarkers.forEach(m => map.removeLayer(m));
+                cadGhostMarkers = [];
+                pendingCadPoints = [];
+
+                const steps = Math.floor(distanceMeters / cadIntervalMeters);
+
+                // Add start bin (at 0m)
+                pendingCadPoints.push({
+                    lat: cadStartLatLng.lat,
+                    lng: cadStartLatLng.lng,
+                    offsetM: 0
+                });
+
+                for (let i = 1; i <= steps; i++) {
+                    const d = i * cadIntervalMeters;
+                    const dest = computeDestinationPoint(cadStartLatLng.lat, cadStartLatLng.lng, d, bearing);
+                    pendingCadPoints.push({
+                        lat: dest.lat,
+                        lng: dest.lng,
+                        offsetM: d
+                    });
+                }
+
+                // Render ghost preview markers
+                pendingCadPoints.forEach((pt, idx) => {
+                    const ghostIcon = L.divIcon({
+                        html: `<div class="cad-ghost-bin">${idx + 1}</div>`,
+                        className: '',
+                        iconSize: [26, 26],
+                        iconAnchor: [13, 13]
+                    });
+                    const marker = L.marker([pt.lat, pt.lng], { icon: ghostIcon }).addTo(map);
+                    cadGhostMarkers.push(marker);
+                });
+            });
+
+            map.on('mouseup', (e) => {
+                if (!isCadModeActive || !cadIsMouseDown) return;
+                cadIsMouseDown = false;
+
+                if (pendingCadPoints.length < 2) {
+                    showToast("Line was too short! Drag farther to place at least 2 bins.", true);
+                    clearCadDraft();
+                    return;
+                }
+
+                // Prompt user with modal to save this straight line of bins
+                document.getElementById('cadModalBinCount').innerText = pendingCadPoints.length;
+                const totalDist = (pendingCadPoints.length - 1) * cadIntervalMeters;
+                document.getElementById('cadModalTotalDistance').innerText = totalDist;
+                document.getElementById('cadModalIntervalDisplay').innerText = cadIntervalMeters;
+                document.getElementById('cadConfirmModal').classList.remove('hidden');
+            });
+        }
+
+        function cancelCadArray() {
+            document.getElementById('cadConfirmModal').classList.add('hidden');
+            clearCadDraft();
+            document.getElementById('cadStatusHud').innerText = "Waiting for long-press...";
+        }
+
+        function confirmSaveCadArray() {
+            const baseName = document.getElementById('cadBaseNameInput').value.trim() || "Kumbh Ghat Smart Bin";
+            const cap = document.getElementById('cadBinCapacity').value;
+            const cat = document.getElementById('cadBinCategory').value;
+
+            const updates = {};
+            const timestamp = Date.now();
+
+            pendingCadPoints.forEach((pt, idx) => {
+                const binId = `BIN-${Math.floor(100 + Math.random() * 900)}${idx + 1}`;
+                const binData = {
+                    id: binId,
+                    name: `${baseName} #${idx + 1} (+${pt.offsetM}m)`,
+                    coords: [pt.lat, pt.lng],
+                    lat: pt.lat,
+                    lng: pt.lng,
+                    capacity: cap,
+                    category: cat,
+                    fillLevel: Math.floor(Math.random() * 20) + 5, // Initialize clean
+                    temperature: 28.0,
+                    odourLevel: 300,
+                    odourStatus: "Normal",
+                    timestamp: timestamp + idx
+                };
+                updates['dustbins/' + binId] = binData;
+            });
+
+            showToast(`🛰️ Deploying ${pendingCadPoints.length} straight-line bins to cloud...`);
+
+            db.ref().update(updates).then(() => {
+                showToast(`✅ Successfully deployed ${pendingCadPoints.length} bins along line!`);
+                cancelCadArray();
+                toggleCadMode(); // Turn off CAD mode once completed
+            }).catch(err => {
+                showToast("Deploy error: " + err.message, true);
+            });
+        }
+
+        function computeBearingDegrees(lat1, lon1, lat2, lon2) {
+            const toRad = Math.PI / 180;
+            const toDeg = 180 / Math.PI;
+            const phi1 = lat1 * toRad;
+            const phi2 = lat2 * toRad;
+            const deltaLambda = (lon2 - lon1) * toRad;
+
+            const y = Math.sin(deltaLambda) * Math.cos(phi2);
+            const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(deltaLambda);
+            let bearing = Math.atan2(y, x) * toDeg;
+            return (bearing + 360) % 360;
+        }
+
+        function computeDestinationPoint(lat, lng, distanceMeters, bearingDegrees) {
+            const R = 6378137;
+            const d = distanceMeters / R;
+            const brng = (bearingDegrees * Math.PI) / 180;
+            const lat1 = (lat * Math.PI) / 180;
+            const lon1 = (lng * Math.PI) / 180;
+
+            const lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brng));
+            const lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
+
+            return {
+                lat: (lat2 * 180) / Math.PI,
+                lng: (lon2 * 180) / Math.PI
+            };
+        }
+
         function sanitizeText(txt) {
             if (!txt) return "";
             return String(txt).replace(/kopargaon/gi, "Nashik");
@@ -571,24 +875,6 @@
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
-        }
-
-        // ================= GEOMETRIC DISTANCE & OFFSET ENGINE =================
-        // Calculates a destination lat/lng from a start point, distance in meters, and bearing in degrees
-        function computeDestinationPoint(lat, lng, distanceMeters, bearingDegrees) {
-            const R = 6378137; // Earth's radius in meters
-            const d = distanceMeters / R; // angular distance in radians
-            const brng = (bearingDegrees * Math.PI) / 180;
-            const lat1 = (lat * Math.PI) / 180;
-            const lon1 = (lng * Math.PI) / 180;
-
-            const lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brng));
-            const lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
-
-            return {
-                lat: (lat2 * 180) / Math.PI,
-                lng: (lon2 * 180) / Math.PI
-            };
         }
 
         function applyOffsetDistancePreset(val) {
@@ -700,7 +986,10 @@
                 renderWorkersRoster();
             });
 
-            setTimeout(initMap, 200);
+            setTimeout(() => {
+                initMap();
+                initCadMapListeners();
+            }, 200);
         }
 
         function updateMetrics() {
@@ -726,7 +1015,6 @@
         }
 
         // ================= LIVE MAP RENDERER =================
-        // Automatically filters out resolved complaints from the live map view
         function updateMapMarkers() {
             if (!map) return;
 
@@ -735,10 +1023,10 @@
             mapMarkers = [];
             binMarkers = [];
 
-            // 1. Only Render ACTIVE Complaints on Live Map (Pending & Dispatched)
+            // 1. Only Render UNRESOLVED complaints on Live Map
             complaints.forEach(item => {
                 if (item.status === 'Resolved') {
-                    // PURGED FROM LIVE MAP AFTER RESOLUTION
+                    // PURGED AUTOMATICALLY FROM LIVE MAP AFTER RESOLUTION
                     return;
                 }
 
@@ -899,7 +1187,7 @@
             }
         }
 
-        // ================= COMPLAINT SELECTION & BATCH DELETION =================
+        // ================= COMPLAINTS BATCH DELETION =================
         function toggleComplaintSelect(complaintId, isChecked) {
             if (isChecked) selectedComplaintIds.add(complaintId);
             else selectedComplaintIds.delete(complaintId);
@@ -922,7 +1210,6 @@
                 return;
             }
 
-            // Verify only resolved tickets are selected
             const targets = complaints.filter(c => selectedComplaintIds.has(c.id));
             const activeIncluded = targets.some(c => c.status !== 'Resolved');
 
