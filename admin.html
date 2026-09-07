@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoClean Admin - City Municipal Command Center</title>
+    <title>Nirmal Kumbh - Municipal Command Center</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,13 +13,14 @@
             theme: {
                 extend: {
                     colors: {
-                        crimson: {
-                            50: '#FDF2F3',
-                            100: '#FBE6E8',
-                            500: '#D32F2F',
-                            700: '#9E1220',
-                            800: '#750B16',
-                            900: '#540810'
+                        nkGreen: {
+                            50: '#F2FAF4',
+                            100: '#E1F5E6',
+                            500: '#2E7D32',
+                            600: '#1B5E20',
+                            700: '#154A19',
+                            800: '#0E3612',
+                            900: '#08230B'
                         }
                     },
                     fontFamily: {
@@ -46,7 +47,7 @@
     <style>
         html, body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #0A0B0E;
+            background-color: #06170A;
             color: #1E293B;
             height: 100%;
         }
@@ -57,77 +58,93 @@
             z-index: 1;
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #9E1220; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #1B5E20; border-radius: 8px; }
+
+        /* Kumbh Ghat Background */
+        .kumbh-hero-bg {
+            background-image: linear-gradient(to bottom, rgba(6, 23, 10, 0.82), rgba(8, 35, 11, 0.94)), 
+                              url('https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+        }
 
         /* Real-Time Bin Overflow Pulse Effect */
         .bin-critical-pulse {
             animation: pulse-ring 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
         }
         @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.85); }
             70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
     </style>
 </head>
-<body class="h-full bg-slate-950 text-slate-100 antialiased selection:bg-rose-600 selection:text-white flex flex-col">
+<body class="h-full bg-[#06170A] text-slate-100 antialiased selection:bg-emerald-600 selection:text-white flex flex-col">
 
     <div id="toast" class="fixed top-4 right-4 z-50 hidden max-w-sm w-full p-3.5 rounded-2xl shadow-2xl text-xs font-bold border transition-all pointer-events-none"></div>
 
-    <!-- ================= AUTH VIEW ================= -->
-    <main id="authSection" class="flex-1 flex items-center justify-center bg-gradient-to-br from-[#8B1220] via-[#3B070D] to-[#0A0B0E] p-6">
-        <div class="max-w-md w-full bg-[#160407]/90 backdrop-blur-xl border border-rose-900/40 rounded-3xl p-8 shadow-2xl space-y-6">
-            <div class="text-center space-y-2">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-3xl shadow-inner">🛡️</div>
-                <h1 class="text-2xl font-black tracking-tight text-white">Command Center</h1>
-                <p class="text-xs text-rose-300/80 font-medium">City Municipal Corporation • Admin Desk</p>
+    <!-- ================= AUTH VIEW (KUMBH BACKGROUND + LOGO) ================= -->
+    <main id="authSection" class="flex-1 flex items-center justify-center kumbh-hero-bg p-6 relative">
+        <div class="max-w-md w-full bg-[#0b2410]/90 backdrop-blur-xl border border-emerald-500/30 rounded-3xl p-8 shadow-2xl space-y-6 relative z-10">
+            <div class="text-center space-y-3">
+                <!-- Nirmal Kumbh Logo -->
+                <div class="w-20 h-20 mx-auto rounded-full bg-white p-1 shadow-2xl border-2 border-emerald-400/50 flex items-center justify-center overflow-hidden">
+                    <img src="logo.png" onerror="this.onerror=null; this.src='https://api.iconify.design/fluent-emoji:wastebasket.svg';" alt="Nirmal Kumbh Logo" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight text-white">Command Center</h1>
+                    <p class="text-xs text-emerald-200/90 font-bold uppercase tracking-wider">Nirmal Kumbh • Municipal Admin Desk</p>
+                    <p class="text-[10px] text-emerald-300/70 font-mono mt-0.5">Nashik Civic & IoT Waste Grid</p>
+                </div>
             </div>
 
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <div>
-                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Admin User ID</label>
-                    <input type="text" id="adminUser" value="sanjivani" required class="w-full mt-1 px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-900/80 border border-rose-950 text-white focus:outline-none focus:ring-2 focus:ring-rose-500">
+                    <label class="text-[10px] font-black uppercase tracking-wider text-emerald-300/80">Admin User ID</label>
+                    <input type="text" id="adminUser" value="sanjivani" required class="w-full mt-1 px-4 py-2.5 text-xs font-bold rounded-xl bg-black/50 border border-emerald-900/80 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
                 <div>
-                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Security Password</label>
-                    <input type="password" id="adminPass" value="sai@12" required class="w-full mt-1 px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-900/80 border border-rose-950 text-white focus:outline-none focus:ring-2 focus:ring-rose-500">
+                    <label class="text-[10px] font-black uppercase tracking-wider text-emerald-300/80">Security Password</label>
+                    <input type="password" id="adminPass" value="sai@12" required class="w-full mt-1 px-4 py-2.5 text-xs font-bold rounded-xl bg-black/50 border border-emerald-900/80 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-rose-800 hover:from-rose-500 hover:to-rose-700 text-white font-extrabold py-3 rounded-xl shadow-lg text-xs uppercase tracking-wider active:scale-95 transition-all">
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-nkGreen-600 hover:from-emerald-500 hover:to-nkGreen-500 text-white font-extrabold py-3 rounded-xl shadow-lg text-xs uppercase tracking-wider active:scale-95 transition-all border border-emerald-400/30">
                     Authorize & Launch Console
                 </button>
             </form>
-            <p class="text-center text-[10px] text-slate-500">Access: sanjivani / sai@12</p>
+            <p class="text-center text-[10px] text-emerald-300/60">Access: sanjivani / sai@12</p>
         </div>
     </main>
 
     <!-- ================= ADMIN DASHBOARD ================= -->
     <div id="mainSection" class="hidden flex-1 flex flex-col h-full overflow-hidden">
         
-        <header class="bg-[#180306] border-b border-rose-950/60 px-6 py-3.5 flex items-center justify-between sticky top-0 z-40">
+        <header class="bg-[#08230B] border-b border-emerald-950/80 px-6 py-3.5 flex items-center justify-between sticky top-0 z-40">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-lg">🛡️</div>
+                <div class="w-10 h-10 rounded-full bg-white p-0.5 border border-emerald-400/40 flex items-center justify-center overflow-hidden">
+                    <img src="logo.png" onerror="this.onerror=null; this.src='https://api.iconify.design/fluent-emoji:wastebasket.svg';" class="w-full h-full object-contain">
+                </div>
                 <div>
                     <h1 class="font-extrabold text-sm text-white tracking-wide flex items-center gap-2">
-                        EcoClean City Command
-                        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">● Cloud Connected</span>
+                        Nirmal Kumbh Command
+                        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">● IoT Cloud Live</span>
                     </h1>
-                    <p class="text-[10px] text-slate-400">City Civic Sanitation, IoT Dustbins & Fleet Management</p>
+                    <p class="text-[10px] text-emerald-300/70">Nashik Civic Sanitation, Smart Bins & Fleet Operations</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
-                <div class="bg-slate-900/80 p-1 rounded-xl border border-rose-950/60 flex text-xs font-bold gap-1">
-                    <button onclick="switchAdminTab('overview')" id="tabBtnOverview" class="px-3 py-1.5 rounded-lg bg-rose-700 text-white shadow-sm">
+                <div class="bg-black/40 p-1 rounded-xl border border-emerald-900/60 flex text-xs font-bold gap-1">
+                    <button onclick="switchAdminTab('overview')" id="tabBtnOverview" class="px-3 py-1.5 rounded-lg bg-emerald-700 text-white shadow-sm">
                         📊 Live Map & Triage
                     </button>
                     <button onclick="switchAdminTab('dustbins')" id="tabBtnDustbins" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">
-                        🗑️ Dustbins (<span id="totalBinsCountBadge">0</span>)
+                        🗑️ Smart Bins (<span id="totalBinsCountBadge">0</span>)
                     </button>
                     <button onclick="switchAdminTab('workers')" id="tabBtnWorkers" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">
                         👷 Crew & Fleet (<span id="activeCrewCount">0</span>)
                     </button>
                 </div>
-                <button onclick="handleAdminLogout()" class="px-3 py-1.5 text-xs bg-rose-950/50 hover:bg-rose-900 border border-rose-800/40 text-rose-300 font-bold rounded-xl active:scale-95 transition-all">
+                <button onclick="handleAdminLogout()" class="px-3 py-1.5 text-xs bg-emerald-950/50 hover:bg-emerald-900 border border-emerald-800/40 text-emerald-300 font-bold rounded-xl active:scale-95 transition-all">
                     Logout
                 </button>
             </div>
@@ -137,44 +154,44 @@
 
             <!-- Metrics Grid -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-[#160407] border border-rose-950/80 p-4 rounded-2xl shadow-sm">
+                <div class="bg-[#0b2410] border border-emerald-900/60 p-4 rounded-2xl shadow-sm">
                     <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Grievances</span>
                     <h3 id="statTotal" class="text-2xl font-black text-white mt-1">0</h3>
-                    <p class="text-[10px] text-slate-500 mt-1">Live from citizens</p>
+                    <p class="text-[10px] text-slate-500 mt-1">Live from pilgrims & citizens</p>
                 </div>
-                <div class="bg-[#160407] border border-rose-950/80 p-4 rounded-2xl shadow-sm">
+                <div class="bg-[#0b2410] border border-emerald-900/60 p-4 rounded-2xl shadow-sm">
                     <span class="text-[10px] font-black uppercase tracking-wider text-rose-400">Pending Triage</span>
-                    <h3 id="statPending" class="text-2xl font-black text-rose-500 mt-1">0</h3>
+                    <h3 id="statPending" class="text-2xl font-black text-rose-400 mt-1">0</h3>
                     <p class="text-[10px] text-slate-500 mt-1">Needs crew dispatch</p>
                 </div>
-                <div class="bg-[#160407] border border-rose-950/80 p-4 rounded-2xl shadow-sm">
-                    <span class="text-[10px] font-black uppercase tracking-wider text-amber-400">Municipal Dustbins</span>
+                <div class="bg-[#0b2410] border border-emerald-900/60 p-4 rounded-2xl shadow-sm">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-amber-400">Municipal Smart Bins</span>
                     <h3 id="statTotalBins" class="text-2xl font-black text-amber-400 mt-1">0</h3>
-                    <p class="text-[10px] text-slate-500 mt-1">IoT Live Level Monitored</p>
+                    <p class="text-[10px] text-slate-500 mt-1">IoT Live Telemetry Grid</p>
                 </div>
-                <div class="bg-[#160407] border border-rose-950/80 p-4 rounded-2xl shadow-sm">
+                <div class="bg-[#0b2410] border border-emerald-900/60 p-4 rounded-2xl shadow-sm">
                     <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400">On-Duty Sanitation Crew</span>
                     <h3 id="statOnDutyWorkers" class="text-2xl font-black text-emerald-400 mt-1">0</h3>
-                    <p class="text-[10px] text-slate-500 mt-1">Active on field</p>
+                    <p class="text-[10px] text-slate-500 mt-1">Active across Nashik Ghats</p>
                 </div>
             </div>
 
             <!-- VIEW 1: MAP & TRIAGE TABLE -->
             <div id="viewOverview" class="space-y-6">
-                <div class="bg-[#160407] border border-rose-950/80 rounded-3xl p-5 space-y-3">
+                <div class="bg-[#0b2410] border border-emerald-900/60 rounded-3xl p-5 space-y-3">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <h2 class="text-xs font-black uppercase tracking-wider text-slate-200 flex items-center gap-2">
-                                <span>🗺️</span> Geographic Command Map (Live IoT Tracking)
+                                <span>🗺️</span> Nashik Geographic Command Map (Live IoT Tracking)
                             </h2>
-                            <p class="text-[11px] text-slate-400">Real-time citizen grievance markers & live dustbin fill levels</p>
+                            <p class="text-[11px] text-emerald-300/70">Real-time citizen grievance markers & live smart dustbin fill levels</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="openDustbinModal(null)" class="px-3.5 py-1.5 bg-rose-700 hover:bg-rose-600 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 active:scale-95 transition-all shadow-md">
+                            <button onclick="openDustbinModal(null)" class="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 active:scale-95 transition-all shadow-md">
                                 <span>📍</span>
                                 <span>Place Bin on Map</span>
                             </button>
-                            <div class="flex items-center gap-2 text-[10px] font-bold pl-2 border-l border-rose-950/80">
+                            <div class="flex items-center gap-2 text-[10px] font-bold pl-2 border-l border-emerald-900/80">
                                 <span class="flex items-center gap-1 text-rose-400"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Grievance</span>
                                 <span class="flex items-center gap-1 text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Bin &lt;50%</span>
                                 <span class="flex items-center gap-1 text-amber-400"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Bin 50-79%</span>
@@ -183,28 +200,28 @@
                         </div>
                     </div>
 
-                    <div class="h-96 w-full rounded-2xl overflow-hidden border border-rose-950/80 relative">
+                    <div class="h-96 w-full rounded-2xl overflow-hidden border border-emerald-950 relative">
                         <div id="adminLiveMap" class="w-full h-full"></div>
                     </div>
                 </div>
 
                 <!-- Complaints Table -->
-                <div class="bg-[#160407] border border-rose-950/80 rounded-3xl p-5 space-y-4">
+                <div class="bg-[#0b2410] border border-emerald-900/60 rounded-3xl p-5 space-y-4">
                     <div class="flex items-center justify-between">
                         <div>
                             <h2 class="text-xs font-black uppercase tracking-wider text-slate-300">
-                                Citizen Grievances Ledger & History
+                                Grievances Ledger & Cleanup History
                             </h2>
                             <p class="text-[10px] text-slate-500">Resolved tickets can be deleted; active tickets are protected</p>
                         </div>
-                        <span id="complaintTableCount" class="text-xs bg-slate-900 border border-rose-950 px-2.5 py-1 rounded-full font-bold text-slate-300">
+                        <span id="complaintTableCount" class="text-xs bg-black/40 border border-emerald-900/60 px-2.5 py-1 rounded-full font-bold text-emerald-300">
                             0 Total
                         </span>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-900/80 text-slate-400 text-[10px] font-black uppercase tracking-wider border-b border-rose-950/60">
+                            <thead class="bg-black/50 text-slate-400 text-[10px] font-black uppercase tracking-wider border-b border-emerald-950">
                                 <tr>
                                     <th class="p-3">ID & Timestamps</th>
                                     <th class="p-3">Citizen Info</th>
@@ -216,7 +233,7 @@
                                     <th class="p-3 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="complaintsTableBody" class="divide-y divide-rose-950/40"></tbody>
+                            <tbody id="complaintsTableBody" class="divide-y divide-emerald-950/60"></tbody>
                         </table>
                     </div>
                 </div>
@@ -226,19 +243,19 @@
             <div id="viewDustbins" class="hidden space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-sm font-black text-white">Municipal Smart Dustbins & IoT Telemetry</h2>
+                        <h2 class="text-sm font-black text-white">Nirmal Kumbh Smart Bins & Telemetry</h2>
                         <p class="text-xs text-slate-400">Live fill level percentage, temperature, and odour readings</p>
                     </div>
-                    <button onclick="openDustbinModal(null)" class="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5">
+                    <button onclick="openDustbinModal(null)" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5">
                         <span>📍</span>
                         <span>Place New Dustbin on Map</span>
                     </button>
                 </div>
 
-                <div class="bg-[#160407] border border-rose-950/80 rounded-3xl p-5 space-y-4">
+                <div class="bg-[#0b2410] border border-emerald-900/60 rounded-3xl p-5 space-y-4">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-900/80 text-slate-400 text-[10px] font-black uppercase tracking-wider border-b border-rose-950/60">
+                            <thead class="bg-black/50 text-slate-400 text-[10px] font-black uppercase tracking-wider border-b border-emerald-950">
                                 <tr>
                                     <th class="p-3">Bin ID</th>
                                     <th class="p-3">Name & Landmark</th>
@@ -249,7 +266,7 @@
                                     <th class="p-3 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="dustbinsTableBody" class="divide-y divide-rose-950/40"></tbody>
+                            <tbody id="dustbinsTableBody" class="divide-y divide-emerald-950/60"></tbody>
                         </table>
                     </div>
                 </div>
@@ -262,7 +279,7 @@
                         <h2 class="text-sm font-black text-white">Sanitation Crew & Fleet Directory</h2>
                         <p class="text-xs text-slate-400">Manage field workers and live duty status</p>
                     </div>
-                    <button onclick="openWorkerModal(null)" class="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-md active:scale-95 transition-all">
+                    <button onclick="openWorkerModal(null)" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md active:scale-95 transition-all">
                         + Register New Crew Member
                     </button>
                 </div>
@@ -274,8 +291,8 @@
 
     <!-- DUSTBIN MODAL -->
     <div id="dustbinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#160407] border border-rose-900/60 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-rose-950 pb-3">
+        <div class="bg-[#0b2410] border border-emerald-900/80 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-emerald-950 pb-3">
                 <h3 class="text-sm font-black text-white" id="dustbinModalTitle">Choose & Place Dustbin on Map</h3>
                 <button onclick="closeDustbinModal()" class="text-slate-400 hover:text-white font-bold text-xs">✕</button>
             </div>
@@ -284,32 +301,32 @@
                 <input type="hidden" id="editBinId">
 
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase text-slate-300 block">Pinpoint Position on Map (Tap or drag)</label>
-                    <div class="h-48 w-full rounded-2xl overflow-hidden border border-rose-950 relative shadow-inner">
+                    <label class="text-[10px] font-black uppercase text-emerald-300/80 block">Pinpoint Position on Map (Tap or drag)</label>
+                    <div class="h-48 w-full rounded-2xl overflow-hidden border border-emerald-950 relative shadow-inner">
                         <div id="binPickerMap" class="w-full h-full"></div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-black uppercase text-slate-400">Area / Landmark Name</label>
-                    <input type="text" id="binNameInput" placeholder="e.g. Central Market Corner" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none focus:ring-1 focus:ring-rose-500">
+                    <label class="text-[10px] font-black uppercase text-slate-400">Ghat / Landmark Name</label>
+                    <input type="text" id="binNameInput" placeholder="e.g. Ramkund Ghat South Corner" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400">Latitude</label>
-                        <input type="number" step="any" id="binLatInput" required class="w-full mt-1 px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none" onchange="syncPickerFromInputs()">
+                        <input type="number" step="any" id="binLatInput" required class="w-full mt-1 px-3 py-2 text-xs font-mono font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none" onchange="syncPickerFromInputs()">
                     </div>
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400">Longitude</label>
-                        <input type="number" step="any" id="binLngInput" required class="w-full mt-1 px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none" onchange="syncPickerFromInputs()">
+                        <input type="number" step="any" id="binLngInput" required class="w-full mt-1 px-3 py-2 text-xs font-mono font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none" onchange="syncPickerFromInputs()">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400">Bin Capacity</label>
-                        <select id="binCapacityInput" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none">
+                        <select id="binCapacityInput" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
                             <option value="240L">240 Liters</option>
                             <option value="500L" selected>500 Liters</option>
                             <option value="1100L">1100 Liters</option>
@@ -317,7 +334,7 @@
                     </div>
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400">Waste Segregation</label>
-                        <select id="binCategoryInput" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none">
+                        <select id="binCategoryInput" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
                             <option value="Dry & Plastic Waste">Dry & Plastic</option>
                             <option value="Wet & Biodegradable">Wet Waste</option>
                             <option value="Mixed Municipal Waste" selected>Mixed Waste</option>
@@ -326,8 +343,8 @@
                 </div>
 
                 <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeDustbinModal()" class="flex-1 py-2.5 bg-slate-900 text-slate-300 font-bold text-xs rounded-xl">Cancel</button>
-                    <button type="submit" class="flex-1 py-2.5 bg-rose-700 hover:bg-rose-600 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all">Save & Pin Dustbin</button>
+                    <button type="button" onclick="closeDustbinModal()" class="flex-1 py-2.5 bg-black/40 text-slate-300 font-bold text-xs rounded-xl">Cancel</button>
+                    <button type="submit" class="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all">Save & Pin Dustbin</button>
                 </div>
             </form>
         </div>
@@ -335,8 +352,8 @@
 
     <!-- WORKER REGISTRATION MODAL -->
     <div id="workerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#160407] border border-rose-900/60 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-rose-950 pb-3">
+        <div class="bg-[#0b2410] border border-emerald-900/80 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-emerald-950 pb-3">
                 <h3 class="text-sm font-black text-white" id="workerModalTitle">Register Crew Member</h3>
                 <button onclick="closeWorkerModal()" class="text-slate-400 hover:text-white font-bold text-xs">✕</button>
             </div>
@@ -345,23 +362,23 @@
                 <input type="hidden" id="editWorkerId">
                 <div>
                     <label class="text-[10px] font-black uppercase text-slate-400">Full Name</label>
-                    <input type="text" id="workerNameInput" placeholder="e.g. Ramesh Kadam" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none">
+                    <input type="text" id="workerNameInput" placeholder="e.g. Ramesh Kadam" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
                 </div>
                 <div>
                     <label class="text-[10px] font-black uppercase text-slate-400">Phone Number (10 Digits)</label>
-                    <input type="tel" id="workerPhoneInput" placeholder="9822XXXXXX" pattern="[0-9]{10}" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none">
+                    <input type="tel" id="workerPhoneInput" placeholder="9822XXXXXX" pattern="[0-9]{10}" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] font-black uppercase text-slate-400">Assigned Ward</label>
-                    <input type="text" id="workerWardInput" placeholder="Ward 1 - Central Zone" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none">
+                    <label class="text-[10px] font-black uppercase text-slate-400">Assigned Ward / Ghat</label>
+                    <input type="text" id="workerWardInput" placeholder="Panchavati Zone - Ramkund" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
                 </div>
                 <div>
                     <label class="text-[10px] font-black uppercase text-slate-400">Vehicle Number</label>
-                    <input type="text" id="workerVehicleInput" placeholder="MH-17-AG-4421" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none">
+                    <input type="text" id="workerVehicleInput" placeholder="MH-15-AB-1234" required class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
                 </div>
                 <div>
                     <label class="text-[10px] font-black uppercase text-slate-400">Duty Status</label>
-                    <select id="workerStatusInput" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-slate-900 border border-rose-950 text-white focus:outline-none">
+                    <select id="workerStatusInput" class="w-full mt-1 px-3 py-2 text-xs font-bold rounded-xl bg-black/50 border border-emerald-950 text-white focus:outline-none">
                         <option value="On Duty">On Duty</option>
                         <option value="On Break">On Break</option>
                         <option value="Off Duty">Off Duty</option>
@@ -369,8 +386,8 @@
                 </div>
 
                 <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeWorkerModal()" class="flex-1 py-2.5 bg-slate-900 text-slate-300 font-bold text-xs rounded-xl">Cancel</button>
-                    <button type="submit" class="flex-1 py-2.5 bg-rose-700 hover:bg-rose-600 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all">Save Worker</button>
+                    <button type="button" onclick="closeWorkerModal()" class="flex-1 py-2.5 bg-black/40 text-slate-300 font-bold text-xs rounded-xl">Cancel</button>
+                    <button type="submit" class="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all">Save Worker</button>
                 </div>
             </form>
         </div>
@@ -378,8 +395,8 @@
 
     <!-- DISPATCH MODAL -->
     <div id="dispatchModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#160407] border border-rose-900/60 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-rose-950 pb-3">
+        <div class="bg-[#0b2410] border border-emerald-900/80 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-emerald-950 pb-3">
                 <h3 class="text-sm font-black text-white">Dispatch Sanitation Crew</h3>
                 <button onclick="closeDispatchModal()" class="text-slate-400 hover:text-white font-bold text-xs">✕</button>
             </div>
@@ -388,8 +405,8 @@
             </div>
             <div class="space-y-2 max-h-60 overflow-y-auto pr-1" id="dispatchWorkerList"></div>
             <div class="flex gap-2 pt-2">
-                <button onclick="closeDispatchModal()" class="flex-1 py-2.5 bg-slate-900 text-slate-300 font-bold text-xs rounded-xl">Cancel</button>
-                <button onclick="confirmDispatch()" class="flex-1 py-2.5 bg-rose-700 hover:bg-rose-600 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all">Confirm & Dispatch</button>
+                <button onclick="closeDispatchModal()" class="flex-1 py-2.5 bg-black/40 text-slate-300 font-bold text-xs rounded-xl">Cancel</button>
+                <button onclick="confirmDispatch()" class="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-md active:scale-95 transition-all">Confirm & Dispatch</button>
             </div>
         </div>
     </div>
@@ -400,7 +417,6 @@
     </div>
 
     <script>
-        // Updated to your new confirmed kumbhathon-68ebf Firebase credentials
         const firebaseConfig = {
             apiKey: "AIzaSyDmm0D5e4jtjMb470bjb6_pqe__uGt6Xkc",
             authDomain: "kumbhathon-68ebf.firebaseapp.com",
@@ -414,7 +430,7 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Nashik City Center
+        // Nashik City Center (Godavari Ghats / Ramkund)
         const CITY_COORDS = [19.9975, 73.7898];
         let map = null;
         let mapMarkers = [];
@@ -427,9 +443,9 @@
         let complaints = [];
         let municipalDustbins = [];
         let workers = [
-            { id: "W101", name: "Raju Shinde", phone: "9822110022", vehicle: "MH-17-AG-4421", ward: "Ward 1 - Station Road", status: "On Duty", activeTasks: 0, completed: 34 },
-            { id: "W102", name: "Sunita Jadhav", phone: "9822110033", vehicle: "MH-17-AG-1092", ward: "Ward 2 - Market Chowk", status: "On Duty", activeTasks: 0, completed: 28 },
-            { id: "W103", name: "Ganesh Pawar", phone: "9822110044", vehicle: "MH-17-AG-8833", ward: "Ward 3 - River Ghat", status: "On Duty", activeTasks: 0, completed: 45 }
+            { id: "W101", name: "Raju Shinde", phone: "9822110022", vehicle: "MH-15-AG-4421", ward: "Ward 1 - Ramkund Ghat", status: "On Duty", activeTasks: 0, completed: 34 },
+            { id: "W102", name: "Sunita Jadhav", phone: "9822110033", vehicle: "MH-15-AG-1092", ward: "Ward 2 - Panchavati Chowk", status: "On Duty", activeTasks: 0, completed: 28 },
+            { id: "W103", name: "Ganesh Pawar", phone: "9822110044", vehicle: "MH-15-AG-8833", ward: "Ward 3 - Tapovan Route", status: "On Duty", activeTasks: 0, completed: 45 }
         ];
 
         function sanitizeText(txt) {
@@ -494,7 +510,6 @@
         }
 
         function initDashboard() {
-            // Live Grievances Listener
             db.ref('complaints').on('value', (snapshot) => {
                 const data = snapshot.val();
                 complaints = data ? Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)) : [];
@@ -503,7 +518,6 @@
                 updateMapMarkers();
             });
 
-            // Live Dustbin & IoT Telemetry Listener
             db.ref('dustbins').on('value', (snapshot) => {
                 const data = snapshot.val();
                 municipalDustbins = [];
@@ -519,7 +533,6 @@
                 updateMapMarkers();
             });
 
-            // Workers Listener
             db.ref('workers').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -555,7 +568,6 @@
             updateMapMarkers();
         }
 
-        // ================= DUSTBIN LEVEL TRACKING ON LIVE MAP =================
         function updateMapMarkers() {
             if (!map) return;
 
@@ -564,7 +576,7 @@
             mapMarkers = [];
             binMarkers = [];
 
-            // 1. Render Citizen Complaints
+            // 1. Complaints
             complaints.forEach(item => {
                 const pt = extractCoords(item.coords);
                 if (!pt) return;
@@ -593,7 +605,7 @@
                         <p class="text-[10px] text-slate-500">🕒 Filed: ${filedDateString}</p>
                         <p class="text-[10px] text-slate-600 line-clamp-2">${sanitizeText(item.comment)}</p>
                         <div class="flex items-center justify-between pt-1">
-                            <a href="https://www.google.com/maps?q=${pt[0]},${pt[1]}" target="_blank" class="text-[9px] font-bold text-rose-600 underline">Maps ↗</a>
+                            <a href="https://www.google.com/maps?q=${pt[0]},${pt[1]}" target="_blank" class="text-[9px] font-bold text-emerald-700 underline">Maps ↗</a>
                             ${item.status === 'Resolved' ? `<button onclick="adminDeleteComplaint('${item.id}')" class="text-[9px] font-black text-rose-700 hover:underline">Delete Ticket</button>` : ''}
                         </div>
                     </div>
@@ -601,7 +613,7 @@
                 mapMarkers.push(marker);
             });
 
-            // 2. Render Smart Dustbins with Live Fill Tracking & Telemetry
+            // 2. Smart Dustbins with Live Fill Tracking & Telemetry
             municipalDustbins.forEach(bin => {
                 let pt = extractCoords(bin.coords) || extractCoords([bin.lat, bin.lng]);
                 if (!pt) return;
@@ -610,7 +622,6 @@
                 const isCritical = fill >= 80;
                 const isModerate = fill >= 50 && fill < 80;
 
-                // Color-code and pulse for overflow warnings
                 let binBg = "bg-emerald-600";
                 let badgeColor = "#10b981";
                 if (isCritical) {
@@ -652,7 +663,6 @@
                         </div>
                         <h4 class="font-extrabold text-xs text-slate-900">${cleanBinName}</h4>
                         
-                        <!-- Fill Gauge -->
                         <div class="space-y-0.5 pt-1">
                             <div class="flex justify-between text-[10px] font-bold text-slate-600">
                                 <span>Fill Level</span>
@@ -663,7 +673,6 @@
                             </div>
                         </div>
 
-                        <!-- Live Telemetry -->
                         <div class="text-[10px] text-slate-600 space-y-0.5 pt-1 border-t">
                             <p>🌡️ Temp: <b>${bin.temperature || '--'} °C</b></p>
                             <p>💨 Odour: <b>${bin.odourStatus || 'Normal'}</b></p>
@@ -671,7 +680,7 @@
                         </div>
 
                         <div class="flex gap-1 pt-1.5">
-                            <a href="https://www.google.com/maps?q=${pt[0]},${pt[1]}" target="_blank" class="text-[10px] font-bold text-sky-600 underline">Maps ↗</a>
+                            <a href="https://www.google.com/maps?q=${pt[0]},${pt[1]}" target="_blank" class="text-[10px] font-bold text-emerald-700 underline">Maps ↗</a>
                             <button onclick="deleteDustbin('${bin.id}')" class="text-[10px] font-bold text-rose-600 ml-auto">Delete</button>
                         </div>
                     </div>
@@ -691,7 +700,7 @@
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(pickerMapInstance);
 
                 const pickerIcon = L.divIcon({
-                    html: `<div class="w-8 h-8 rounded-full bg-sky-500 border-2 border-white text-white flex items-center justify-center text-sm font-black shadow-2xl">🗑️</div>`,
+                    html: `<div class="w-8 h-8 rounded-full bg-emerald-600 border-2 border-white text-white flex items-center justify-center text-sm font-black shadow-2xl">🗑️</div>`,
                     className: '', iconSize: [32, 32], iconAnchor: [16, 16]
                 });
 
@@ -732,7 +741,7 @@
             tbody.innerHTML = "";
 
             if (municipalDustbins.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-500 text-xs">No municipal dustbins registered yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-500 text-xs">No smart bins registered yet.</td></tr>`;
                 return;
             }
 
@@ -743,7 +752,7 @@
                 const isModerate = fill >= 50 && fill < 80;
 
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-rose-950/20 transition-colors";
+                tr.className = "hover:bg-emerald-950/20 transition-colors";
 
                 let fillBadgeColor = isCritical ? 'bg-rose-500/20 text-rose-400 border-rose-500/30' : (isModerate ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30');
 
@@ -764,7 +773,7 @@
                     </td>
                     <td class="p-3 text-slate-300 text-[11px]">${bin.capacity || '500L'} • ${bin.category || 'Mixed'}</td>
                     <td class="p-3 text-right space-x-1.5">
-                        <button onclick="focusMapOnDustbin('${bin.id}')" class="px-2.5 py-1 bg-sky-900/60 hover:bg-sky-800 border border-sky-700 text-sky-200 text-[10px] rounded-lg font-bold">🗺️ Map</button>
+                        <button onclick="focusMapOnDustbin('${bin.id}')" class="px-2.5 py-1 bg-emerald-900/60 hover:bg-emerald-800 border border-emerald-700 text-emerald-200 text-[10px] rounded-lg font-bold">🗺️ Map</button>
                         <button onclick="openDustbinModal('${bin.id}')" class="px-2.5 py-1 bg-amber-700 hover:bg-amber-600 text-white text-[10px] rounded-lg font-bold">✏️ Edit</button>
                         <button onclick="deleteDustbin('${bin.id}')" class="px-2.5 py-1 bg-rose-800 hover:bg-rose-700 text-white text-[10px] rounded-lg font-bold">🗑️ Delete</button>
                     </td>
@@ -821,7 +830,6 @@
             const cap = document.getElementById('binCapacityInput').value;
             const cat = document.getElementById('binCategoryInput').value;
 
-            // Preserve live sensor values if editing an existing node
             const existing = municipalDustbins.find(b => b.id === editId) || {};
 
             const binData = { 
@@ -861,7 +869,7 @@
 
             workers.forEach(w => {
                 const card = document.createElement('div');
-                card.className = "bg-[#160407] border border-rose-950/80 rounded-2xl p-4 space-y-3 shadow-sm flex flex-col justify-between";
+                card.className = "bg-[#0b2410] border border-emerald-900/60 rounded-2xl p-4 space-y-3 shadow-sm flex flex-col justify-between";
                 let statusBadgeColor = w.status === 'On Duty' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700';
 
                 card.innerHTML = `
@@ -879,7 +887,7 @@
                             <p>📞 Phone: <strong class="text-slate-200">${w.phone}</strong></p>
                         </div>
                     </div>
-                    <div class="pt-2 border-t border-rose-950/60 flex items-center justify-between text-[10px] font-bold text-slate-400">
+                    <div class="pt-2 border-t border-emerald-950 flex items-center justify-between text-[10px] font-bold text-slate-400">
                         <span>Active Tasks: <strong class="text-white">${w.activeTasks || 0}</strong></span>
                         <span>Cleanups Done: <strong class="text-emerald-400">${w.completed || 0}</strong></span>
                     </div>
@@ -919,7 +927,7 @@
             complaints.forEach(item => {
                 const pt = extractCoords(item.coords) || [0, 0];
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-rose-950/20 transition-colors";
+                tr.className = "hover:bg-emerald-950/20 transition-colors";
 
                 let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/30">Pending</span>`;
                 if (item.status === 'Dispatched') statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">Dispatched</span>`;
@@ -933,17 +941,17 @@
                 tr.innerHTML = `
                     <td class="p-3">
                         <span class="font-black text-white font-mono block">${item.id}</span>
-                        <span class="text-[10px] font-bold text-rose-400 block mt-0.5">🕒 Filed: ${filedDateString}</span>
+                        <span class="text-[10px] font-bold text-emerald-400 block mt-0.5">🕒 Filed: ${filedDateString}</span>
                         ${resolvedDateString ? `<span class="text-[9px] font-bold text-emerald-400 block">✓ Cleared: ${resolvedDateString}</span>` : ''}
                     </td>
                     <td class="p-3">
-                        <span class="font-bold text-slate-200 block">${item.citizenName || 'Resident'}</span>
+                        <span class="font-bold text-slate-200 block">${item.citizenName || 'Pilgrim'}</span>
                         <span class="text-[10px] text-slate-500 font-mono">${item.citizenPhone || 'N/A'}</span>
                     </td>
                     <td class="p-3">
                         <div class="flex items-center gap-2">
                             <div class="text-center">
-                                <img src="${item.beforeImage}" onclick="openLightbox('${item.beforeImage}')" class="w-12 h-12 rounded-xl object-cover border border-rose-950 cursor-pointer shadow-sm">
+                                <img src="${item.beforeImage}" onclick="openLightbox('${item.beforeImage}')" class="w-12 h-12 rounded-xl object-cover border border-emerald-950 cursor-pointer shadow-sm">
                                 <span class="text-[8px] text-slate-400 font-bold block uppercase mt-0.5">Before</span>
                             </div>
                             ${item.afterImage ? `
@@ -956,7 +964,7 @@
                     </td>
                     <td class="p-3">
                         <span class="font-bold text-slate-200 block">${cleanLandmark}</span>
-                        <a href="https://www.google.com/maps?q=${pt[0]},${pt[1]}" target="_blank" class="text-[10px] font-bold text-rose-400 underline">Maps ↗</a>
+                        <a href="https://www.google.com/maps?q=${pt[0]},${pt[1]}" target="_blank" class="text-[10px] font-bold text-emerald-400 underline">Maps ↗</a>
                     </td>
                     <td class="p-3">
                         <p class="text-slate-300 text-xs line-clamp-2">${sanitizeText(item.comment)}</p>
@@ -967,17 +975,17 @@
                     <td class="p-3 text-right">
                         <div class="flex flex-col items-end gap-1.5">
                             ${item.status === 'Pending' ? `
-                                <button onclick="openDispatchModal('${item.id}')" class="px-3 py-1.5 bg-rose-700 hover:bg-rose-600 text-white font-bold text-[10px] rounded-lg shadow-sm whitespace-nowrap">
+                                <button onclick="openDispatchModal('${item.id}')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[10px] rounded-lg shadow-sm whitespace-nowrap">
                                     🚚 Dispatch
                                 </button>
                             ` : ''}
                             ${isResolved ? `
-                                <button onclick="adminDeleteComplaint('${item.id}')" class="px-2.5 py-1.5 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-300 font-extrabold text-[10px] rounded-lg shadow-sm flex items-center gap-1 active:scale-95 transition-all whitespace-nowrap">
+                                <button onclick="adminDeleteComplaint('${item.id}')" class="px-2.5 py-1.5 bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 font-extrabold text-[10px] rounded-lg shadow-sm flex items-center gap-1 active:scale-95 transition-all whitespace-nowrap">
                                     <span>🗑️</span>
                                     <span>Delete Ticket</span>
                                 </button>
                             ` : `
-                                <span class="text-[9px] text-slate-500 font-bold bg-slate-900/60 border border-rose-950/60 px-2 py-0.5 rounded whitespace-nowrap">
+                                <span class="text-[9px] text-slate-500 font-bold bg-black/40 border border-emerald-950 px-2 py-0.5 rounded whitespace-nowrap">
                                     🔒 In Progress
                                 </span>
                             `}
@@ -1019,13 +1027,13 @@
             } else {
                 onDutyWorkers.forEach(w => {
                     const label = document.createElement('label');
-                    label.className = "flex items-center justify-between p-3 rounded-xl border border-rose-950 bg-slate-900/50 cursor-pointer";
+                    label.className = "flex items-center justify-between p-3 rounded-xl border border-emerald-950 bg-black/40 cursor-pointer";
                     label.innerHTML = `
                         <div>
                             <span class="font-bold text-xs text-white block">👷 ${w.name} (${w.vehicle})</span>
                             <span class="text-[10px] text-slate-400">${sanitizeText(w.ward)}</span>
                         </div>
-                        <input type="radio" name="selectedWorkerRadio" value="${w.name}" class="text-rose-600">
+                        <input type="radio" name="selectedWorkerRadio" value="${w.name}" class="text-emerald-600">
                     `;
                     list.appendChild(label);
                 });
@@ -1055,14 +1063,14 @@
 
             if (tab === 'overview') {
                 document.getElementById('viewOverview').classList.remove('hidden');
-                document.getElementById('tabBtnOverview').className = "px-3 py-1.5 rounded-lg bg-rose-700 text-white shadow-sm";
+                document.getElementById('tabBtnOverview').className = "px-3 py-1.5 rounded-lg bg-emerald-700 text-white shadow-sm";
                 setTimeout(() => map && map.invalidateSize(), 200);
             } else if (tab === 'dustbins') {
                 document.getElementById('viewDustbins').classList.remove('hidden');
-                document.getElementById('tabBtnDustbins').className = "px-3 py-1.5 rounded-lg bg-rose-700 text-white shadow-sm";
+                document.getElementById('tabBtnDustbins').className = "px-3 py-1.5 rounded-lg bg-emerald-700 text-white shadow-sm";
             } else {
                 document.getElementById('viewWorkers').classList.remove('hidden');
-                document.getElementById('tabBtnWorkers').className = "px-3 py-1.5 rounded-lg bg-rose-700 text-white shadow-sm";
+                document.getElementById('tabBtnWorkers').className = "px-3 py-1.5 rounded-lg bg-emerald-700 text-white shadow-sm";
             }
         }
 
