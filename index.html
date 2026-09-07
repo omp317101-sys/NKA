@@ -77,11 +77,11 @@
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        /* Dynamic Offset Target Dots */
+        /* 5-Multiple Offset Target Dots */
         .offset-target-dot {
-            min-width: 28px;
+            min-width: 32px;
             height: 24px;
-            padding: 0 5px;
+            padding: 0 6px;
             border-radius: 12px;
             background: #10B981;
             border: 2px solid #FFFFFF;
@@ -93,14 +93,14 @@
             font-weight: 900;
             font-family: monospace;
             cursor: pointer;
-            box-shadow: 0 0 14px rgba(16, 185, 129, 0.9);
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.95);
             animation: target-pulse 1.8s infinite;
             white-space: nowrap;
         }
         @keyframes target-pulse {
-            0% { transform: scale(0.95); }
-            50% { transform: scale(1.1); box-shadow: 0 0 18px rgba(16, 185, 129, 1); }
-            100% { transform: scale(0.95); }
+            0% { transform: scale(0.96); }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(16, 185, 129, 1); }
+            100% { transform: scale(0.96); }
         }
     </style>
 </head>
@@ -206,7 +206,7 @@
             <!-- VIEW 1: MAP, COMPLAINTS & DUSTBINS -->
             <div id="viewOverview" class="space-y-6">
                 
-                <!-- MAP SECTION WITH CUSTOM DISTANCES & DIRECTION CONTROLS -->
+                <!-- MAP SECTION WITH 5-MULTIPLES OFFSET CONTROL -->
                 <div id="sectionMap" class="bg-[#0b2410] border border-emerald-900/60 rounded-3xl p-5 space-y-3">
                     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-950/80 pb-3">
                         <div>
@@ -214,15 +214,16 @@
                                 <span>🗺️</span> Nashik Geographic Command Map
                             </h2>
                             <p class="text-[11px] text-emerald-300/70">
-                                ⚡ Click any bin to project offset dots. Type distances below to customize spacing!
+                                ⚡ Click any bin to spawn 5 linear multiples (e.g. 25m &rarr; 25, 50, 75, 100, 125m). Original bin stays fixed.
                             </p>
                         </div>
 
-                        <!-- Configurable Offset Distance Bar -->
+                        <!-- 5-Multiples Configuration Bar -->
                         <div class="flex flex-wrap items-center gap-2 bg-black/50 p-1.5 rounded-2xl border border-emerald-900/60">
                             <div class="flex items-center gap-1 pl-1">
-                                <span class="text-[10px] font-bold text-slate-400">Type Distances (m):</span>
-                                <input type="text" id="mapCustomDistancesInput" value="25, 50, 100, 150, 200" oninput="onCustomDistancesChanged()" placeholder="e.g. 25, 100, 150, 200" class="w-44 bg-slate-900 border border-emerald-950 text-emerald-300 rounded-lg text-xs font-mono font-bold px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                <span class="text-[10px] font-bold text-slate-400">Step Distance:</span>
+                                <input type="number" id="mapMultipleBaseDistance" value="25" min="1" max="1000" oninput="onMultipleBaseDistanceChanged()" class="w-16 bg-slate-900 border border-emerald-950 text-emerald-300 rounded-lg text-xs font-mono font-bold px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                <span class="text-[10px] font-bold text-slate-400">m (×5 dots)</span>
                             </div>
 
                             <div class="flex items-center gap-1 pl-1 border-l border-emerald-950">
@@ -245,7 +246,7 @@
 
                             <button onclick="openDustbinModal(null)" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-extrabold flex items-center gap-1 active:scale-95 transition-all shadow ml-1">
                                 <span>📍</span>
-                                <span>Custom Bin</span>
+                                <span>Add Single Bin</span>
                             </button>
                         </div>
                     </div>
@@ -254,7 +255,7 @@
                     <div id="offsetActiveBanner" class="hidden px-3.5 py-2 bg-emerald-950/70 border border-emerald-500/40 rounded-xl flex items-center justify-between text-xs text-emerald-200">
                         <span class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                            <span>Projecting dots from <b id="offsetActiveBinName" class="text-white">Bin</b>. Click any green dot to add that bin instantly!</span>
+                            <span>Target dots showing from <b id="offsetActiveBinName" class="text-white">Bin</b> at <span id="offsetMultiplesDisplay" class="font-mono text-emerald-300">25m, 50m, 75m, 100m, 125m</span>. Position of original bin is locked.</span>
                         </span>
                         <button onclick="clearMapOffsetRays()" class="text-xs font-bold text-slate-400 hover:text-white">✕ Close</button>
                     </div>
@@ -372,7 +373,7 @@
         </main>
     </div>
 
-    <!-- DUSTBIN MODAL (SINGLE / MANUAL / OFFSET) -->
+    <!-- DUSTBIN MODAL (MANUAL / FORM) -->
     <div id="dustbinModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#0b2410] border border-emerald-900/80 rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-emerald-950 pb-3">
@@ -383,53 +384,9 @@
             <form onsubmit="handleSaveDustbin(event)" class="space-y-3.5">
                 <input type="hidden" id="editBinId">
 
-                <div class="p-3 bg-black/50 border border-emerald-900/60 rounded-2xl space-y-2">
-                    <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                        <span>📐</span> Offset from Existing Bin (25m, 50m, 100m, etc.)
-                    </span>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <div>
-                            <label class="text-[9px] font-bold text-slate-400 block">Reference Dustbin</label>
-                            <select id="offsetSourceBinSelect" onchange="applyReferenceBinSelection()" class="w-full mt-1 px-2.5 py-1.5 text-xs font-bold rounded-xl bg-slate-900 border border-emerald-950 text-white focus:outline-none">
-                                <option value="">-- Manual Pin / None --</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[9px] font-bold text-slate-400 block">Distance</label>
-                            <div class="flex gap-1 mt-1">
-                                <select id="offsetDistancePreset" onchange="applyOffsetDistancePreset(this.value)" class="w-20 px-2 py-1.5 text-xs font-bold rounded-xl bg-slate-900 border border-emerald-950 text-white focus:outline-none">
-                                    <option value="25">25 m</option>
-                                    <option value="50" selected>50 m</option>
-                                    <option value="100">100 m</option>
-                                    <option value="150">150 m</option>
-                                    <option value="200">200 m</option>
-                                    <option value="custom">Custom</option>
-                                </select>
-                                <input type="number" id="offsetDistanceMeters" value="50" min="1" max="10000" class="w-full px-2.5 py-1.5 text-xs font-bold rounded-xl bg-slate-900 border border-emerald-950 text-white focus:outline-none" placeholder="Meters">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="text-[9px] font-bold text-slate-400 block">Direction (Bearing)</label>
-                            <select id="offsetDirectionSelect" onchange="computeAndSetOffsetLocation()" class="w-full mt-1 px-2.5 py-1.5 text-xs font-bold rounded-xl bg-slate-900 border border-emerald-950 text-white focus:outline-none">
-                                <option value="0">North (0°)</option>
-                                <option value="45">North-East (45°)</option>
-                                <option value="90" selected>East (90°)</option>
-                                <option value="135">South-East (135°)</option>
-                                <option value="180">South (180°)</option>
-                                <option value="225">South-West (225°)</option>
-                                <option value="270">West (270°)</option>
-                                <option value="315">North-West (315°)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="button" onclick="computeAndSetOffsetLocation()" class="w-full py-1.5 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 border border-emerald-700/60 text-[10px] font-black rounded-lg active:scale-95 transition-all">
-                        ⚡ Shift Pin By Distance
-                    </button>
-                </div>
-
                 <div class="space-y-1.5">
                     <label class="text-[10px] font-black uppercase text-emerald-300/80 block">Map Pin Placement</label>
-                    <div class="h-44 w-full rounded-2xl overflow-hidden border border-emerald-950 relative shadow-inner">
+                    <div class="h-48 w-full rounded-2xl overflow-hidden border border-emerald-950 relative shadow-inner">
                         <div id="binPickerMap" class="w-full h-full"></div>
                     </div>
                 </div>
@@ -577,20 +534,18 @@
         let selectedComplaintIds = new Set();
         let selectedDustbinIds = new Set();
 
-        // ================= CONFIGURABLE DISTANCE TARGET DOTS ENGINE =================
+        // ================= 5-MULTIPLES OFFSET ENGINE =================
         let activeOffsetRays = [];
         let activeSourceBinForOffset = null;
 
-        function parseTypedDistances() {
-            const raw = document.getElementById('mapCustomDistancesInput').value;
-            if (!raw) return [25, 50, 100, 200];
-            const parsed = raw.split(/[,/ ]+/)
-                .map(s => parseFloat(s.trim()))
-                .filter(n => !isNaN(n) && n > 0);
-            return parsed.length > 0 ? parsed : [25, 50, 100, 200];
+        // Generates an array of 5 exact multiples: [1*X, 2*X, 3*X, 4*X, 5*X]
+        function getFiveMultiples() {
+            const baseInput = parseFloat(document.getElementById('mapMultipleBaseDistance').value);
+            const base = (!isNaN(baseInput) && baseInput > 0) ? baseInput : 25;
+            return [1 * base, 2 * base, 3 * base, 4 * base, 5 * base];
         }
 
-        function onCustomDistancesChanged() {
+        function onMultipleBaseDistanceChanged() {
             if (activeSourceBinForOffset) {
                 spawnRadialOffsetDots(activeSourceBinForOffset.id);
             }
@@ -615,14 +570,16 @@
             const bin = municipalDustbins.find(b => b.id === binId);
             if (!bin) return;
 
+            // Lock source bin reference - original coordinates remain untouched
             activeSourceBinForOffset = bin;
             const pt = extractCoords(bin.coords) || extractCoords([bin.lat, bin.lng]);
             if (!pt) return;
 
             const bearing = (customBearing !== null) ? customBearing : parseFloat(document.getElementById('mapGlobalOffsetDirection').value) || 90;
-            const distances = parseTypedDistances();
+            const distances = getFiveMultiples();
 
             document.getElementById('offsetActiveBinName').innerText = sanitizeText(bin.name);
+            document.getElementById('offsetMultiplesDisplay').innerText = distances.map(d => `${d}m`).join(', ');
             document.getElementById('clearRaysBtn').classList.remove('hidden');
             document.getElementById('offsetActiveBanner').classList.remove('hidden');
 
@@ -633,10 +590,10 @@
                 rayLinePoints.push([targetCoord.lat, targetCoord.lng]);
 
                 const dotIcon = L.divIcon({
-                    html: `<div class="offset-target-dot" title="Add Bin at +${dist}m">+${dist}m</div>`,
+                    html: `<div class="offset-target-dot" title="Place at +${dist}m">+${dist}m</div>`,
                     className: '',
-                    iconSize: [34, 24],
-                    iconAnchor: [17, 12]
+                    iconSize: [38, 24],
+                    iconAnchor: [19, 12]
                 });
 
                 const dotMarker = L.marker([targetCoord.lat, targetCoord.lng], { icon: dotIcon }).addTo(map);
@@ -644,8 +601,8 @@
                 dotMarker.bindPopup(`
                     <div class="p-2.5 max-w-[210px] font-sans text-slate-900 space-y-2">
                         <div class="border-b pb-1">
-                            <span class="text-[9px] font-black uppercase text-emerald-800 tracking-wider">📐 Offset Target</span>
-                            <h4 class="font-extrabold text-xs text-slate-900 mt-0.5">${dist} Meters from ${sanitizeText(bin.name)}</h4>
+                            <span class="text-[9px] font-black uppercase text-emerald-800 tracking-wider">📐 Linear Offset Target</span>
+                            <h4 class="font-extrabold text-xs text-slate-900 mt-0.5">${dist}m from ${sanitizeText(bin.name)}</h4>
                         </div>
                         <p class="text-[10px] text-slate-600">Direction: <b>${bearing}°</b> (${getCompassDirectionLabel(bearing)})</p>
                         <p class="text-[9px] font-mono text-slate-500">${targetCoord.lat.toFixed(5)}, ${targetCoord.lng.toFixed(5)}</p>
@@ -668,8 +625,8 @@
             }).addTo(map);
 
             activeOffsetRays.push(guideLine);
-            map.setView(pt, 17, { animate: true });
-            showToast(`🎯 Showing dots (${distances.join(', ')}m) from ${sanitizeText(bin.name)}`);
+            map.setView(pt, 16, { animate: true });
+            showToast(`🎯 Showing 5 dots (${distances.join(', ')}m) from ${sanitizeText(bin.name)}. Original bin locked!`);
         }
 
         function getCompassDirectionLabel(bearing) {
@@ -678,6 +635,7 @@
             return directions[index];
         }
 
+        // Deploys the new bin while keeping the source bin locked and unchanged
         function deployBinAtOffset(sourceBinId, distanceMeters, lat, lng) {
             const sourceBin = municipalDustbins.find(b => b.id === sourceBinId);
             const sourceName = sourceBin ? sanitizeText(sourceBin.name) : "Ghat";
@@ -774,60 +732,6 @@
             }
         }
 
-        function applyOffsetDistancePreset(val) {
-            const customInput = document.getElementById('offsetDistanceMeters');
-            if (val !== 'custom') {
-                customInput.value = val;
-            }
-            computeAndSetOffsetLocation();
-        }
-
-        function populateOffsetBinDropdown() {
-            const select = document.getElementById('offsetSourceBinSelect');
-            if (!select) return;
-            select.innerHTML = `<option value="">-- Manual Pin / None --</option>`;
-            municipalDustbins.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.id;
-                opt.innerText = `${b.id} - ${sanitizeText(b.name)}`;
-                select.appendChild(opt);
-            });
-        }
-
-        function applyReferenceBinSelection() {
-            const binId = document.getElementById('offsetSourceBinSelect').value;
-            if (!binId) return;
-            const target = municipalDustbins.find(b => b.id === binId);
-            if (!target) return;
-            const pt = extractCoords(target.coords) || extractCoords([target.lat, target.lng]);
-            if (!pt) return;
-
-            updatePickerInputs(pt[0], pt[1]);
-            if (pickerMarker && pickerMapInstance) {
-                pickerMarker.setLatLng(pt);
-                pickerMapInstance.setView(pt, 17);
-            }
-            computeAndSetOffsetLocation();
-        }
-
-        function computeAndSetOffsetLocation() {
-            const baseLat = parseFloat(document.getElementById('binLatInput').value);
-            const baseLng = parseFloat(document.getElementById('binLngInput').value);
-            const distance = parseFloat(document.getElementById('offsetDistanceMeters').value) || 50;
-            const bearing = parseFloat(document.getElementById('offsetDirectionSelect').value) || 0;
-
-            if (isNaN(baseLat) || isNaN(baseLng)) return;
-
-            const newPoint = computeDestinationPoint(baseLat, baseLng, distance, bearing);
-            updatePickerInputs(newPoint.lat, newPoint.lng);
-
-            if (pickerMarker && pickerMapInstance) {
-                pickerMarker.setLatLng([newPoint.lat, newPoint.lng]);
-                pickerMapInstance.setView([newPoint.lat, newPoint.lng], 17);
-            }
-            showToast(`📍 Pin shifted ${distance}m in direction (${bearing}°)`);
-        }
-
         function handleAdminLogin(e) {
             e.preventDefault();
             const u = document.getElementById('adminUser').value.trim();
@@ -868,7 +772,6 @@
                 }
                 updateMetrics();
                 renderDustbinsTable();
-                populateOffsetBinDropdown();
                 updateMapMarkers();
             });
 
@@ -917,7 +820,7 @@
             mapMarkers = [];
             binMarkers = [];
 
-            // 1. Only Render UNRESOLVED complaints on Live Map
+            // 1. Unresolved Complaints Only (Resolved auto-purged from map)
             complaints.forEach(item => {
                 if (item.status === 'Resolved') return;
 
@@ -955,7 +858,7 @@
                 mapMarkers.push(marker);
             });
 
-            // 2. Smart Dustbins with Live Fill Tracking & Telemetry
+            // 2. Municipal Dustbins - strictly NOT draggable (positions locked)
             municipalDustbins.forEach(bin => {
                 let pt = extractCoords(bin.coords) || extractCoords([bin.lat, bin.lng]);
                 if (!pt) return;
@@ -993,7 +896,9 @@
                 });
 
                 const cleanBinName = sanitizeText(bin.name);
-                const marker = L.marker(pt, { icon: binIcon }).addTo(map);
+                
+                // Draggable explicitly FALSE: original bin position will never move
+                const marker = L.marker(pt, { icon: binIcon, draggable: false }).addTo(map);
 
                 marker.bindPopup(`
                     <div class="p-2.5 max-w-[220px] font-sans text-slate-900 space-y-1.5">
@@ -1020,11 +925,11 @@
                             <p>💨 Odour: <b>${bin.odourStatus || 'Normal'}</b></p>
                         </div>
 
-                        <!-- ONE-CLICK RADIAL TARGET DOTS GENERATOR -->
+                        <!-- 1-CLICK 5-MULTIPLES DOTS BUTTON -->
                         <div class="pt-2 border-t space-y-1.5">
                             <button onclick="spawnRadialOffsetDots('${bin.id}')" class="w-full py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[10px] font-black shadow flex items-center justify-center gap-1 active:scale-95 transition-all">
                                 <span>🎯</span>
-                                <span>Project Custom Offset Dots</span>
+                                <span>Show 5 Multiples Dots</span>
                             </button>
                             <div class="flex items-center justify-between text-[10px] font-bold px-1">
                                 <a href="https://www.google.com/maps?q=${pt[0]},${pt[1]}" target="_blank" class="text-emerald-700 underline">Maps ↗</a>
@@ -1350,9 +1255,6 @@
                 document.getElementById('binNameInput').value = "";
                 document.getElementById('binCapacityInput').value = "500L";
                 document.getElementById('binCategoryInput').value = "Mixed Municipal Waste";
-                document.getElementById('offsetSourceBinSelect').value = "";
-                document.getElementById('offsetDistanceMeters').value = "50";
-                document.getElementById('offsetDirectionSelect').value = "90";
             }
 
             modal.classList.remove('hidden');
